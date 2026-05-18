@@ -4,7 +4,7 @@ import { MAX_DIAGNOSTIC_ENTRIES, MAX_ADDITIONAL_CONTEXT_BYTES } from "../core/co
 
 const TS_EXTENSIONS = new Set([".ts", ".tsx", ".mts", ".cts"]);
 
-function isTsFile(filePath: string): boolean {
+export function isTsFile(filePath: string): boolean {
   const dot = filePath.lastIndexOf(".");
   if (dot === -1) return false;
   return TS_EXTENSIONS.has(filePath.slice(dot).toLowerCase());

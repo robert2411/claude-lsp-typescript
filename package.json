@@ -1,0 +1,24 @@
+{
+  "name": "claude-typescript-lsp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "claude-typescript-lsp": "./dist/claude-typescript-lsp"
+  },
+  "scripts": {
+    "dev": "~/.bun/bin/bun run src/index.ts",
+    "build": "~/.bun/bin/bun run scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "~/.bun/bin/bun test",
+    "test:coverage": "~/.bun/bin/bun test test/unit --coverage --coverage-reporter=lcov --coverage-dir=coverage"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/bun": "latest"
+  }
+}

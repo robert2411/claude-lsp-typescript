@@ -1,6 +1,17 @@
 import { describe, it, expect } from "bun:test";
-import { formatDiagnostics } from "../../src/cli/hook.ts";
+import { formatDiagnostics, isTsFile } from "../../src/cli/hook.ts";
 import type { DiagnosticsResult } from "../../src/daemon/protocol.ts";
+
+describe("isTsFile", () => {
+  it("returns true for .ts files", () => expect(isTsFile("/foo/bar.ts")).toBe(true));
+  it("returns true for .tsx files", () => expect(isTsFile("/foo/bar.tsx")).toBe(true));
+  it("returns true for .mts files", () => expect(isTsFile("/foo/bar.mts")).toBe(true));
+  it("returns true for .cts files", () => expect(isTsFile("/foo/bar.cts")).toBe(true));
+  it("returns true case-insensitively", () => expect(isTsFile("/foo/bar.TS")).toBe(true));
+  it("returns false for .js files", () => expect(isTsFile("/foo/bar.js")).toBe(false));
+  it("returns false for .json files", () => expect(isTsFile("/foo/bar.json")).toBe(false));
+  it("returns false for files with no extension", () => expect(isTsFile("/foo/bar")).toBe(false));
+});
 
 const mkDiag = (severity: "error" | "warning" | "information" | "hint", line: number, message: string, code?: string): DiagnosticsResult["diagnostics"][0] => ({
   severity,

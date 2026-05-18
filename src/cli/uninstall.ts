@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync, rmSync, renameSync } from "node:fs";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { CLAUDE_SETTINGS, CLAUDE_JSON, CACHE_DIR } from "../core/paths.ts";
 
 export function runUninstall(args: string[]): void {
@@ -68,13 +68,25 @@ function removeHook(): void {
   console.log(`✓ Hook removed from ${CLAUDE_SETTINGS}`);
 }
 
+function findBinary(name: string): string | null {
+  for (const dir of (process.env.PATH ?? "").split(":")) {
+    if (!dir) continue;
+    const p = `${dir}/${name}`;
+    try { if (existsSync(p)) return p; } catch {}
+  }
+  return null;
+}
+
 function removeMcp(): void {
-  try {
-    execSync("claude mcp remove typescript-lsp", { stdio: "pipe" });
-    console.log("✓ MCP server removed via claude CLI");
-    return;
-  } catch {
-    // fall through to manual removal
+  const claudePath = findBinary("claude");
+  if (claudePath) {
+    try {
+      execFileSync(claudePath, ["mcp", "remove", "typescript-lsp"], { stdio: "pipe" });
+      console.log("✓ MCP server removed via claude CLI");
+      return;
+    } catch {
+      // fall through to manual removal
+    }
   }
 
   if (!existsSync(CLAUDE_JSON)) {
